@@ -34,7 +34,7 @@ const platformConfig = {
                 title: 'Client List',
                 type: 'window' as const,
                 details: {
-                    url: 'http://localhost:5175'
+                    url: 'http://localhost:3001'
                 }
             },
             {
@@ -42,7 +42,7 @@ const platformConfig = {
                 title: 'Client Portfolio',
                 type: 'window' as const,
                 details: {
-                    url: 'http://localhost:5173'
+                    url: 'http://localhost:3003'
                 }
             }
         ]

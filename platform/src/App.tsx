@@ -1,14 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 /**
  * 🎓 TABBED DASHBOARD PLATFORM
  * 
  * A unified dashboard that embeds client apps as iframes within tabs.
- * Features:
- * - Tab bar with closeable tabs
- * - Dropdown to add new apps
- * - Both apps open by default
+ * Acts as a message broker between cross-origin iframes using postMessage.
  */
 
 interface AppDefinition {
@@ -25,20 +22,20 @@ const AVAILABLE_APPS: AppDefinition[] = [
         id: 'client-list',
         name: 'client-list',
         title: 'Client List',
-        url: 'http://localhost:5175',
+        url: 'http://localhost:3001',
         icon: '👥'
     },
     {
         id: 'client-portfolio',
         name: 'client-portfolio',
         title: 'Client Portfolio',
-        url: 'http://localhost:5173',
+        url: 'http://localhost:3003',
         icon: '📊'
     }
 ]
 
 interface AppProps {
-    io: any
+    io?: any
 }
 
 function App({ io }: AppProps) {
@@ -46,7 +43,39 @@ function App({ io }: AppProps) {
     const [openTabs, setOpenTabs] = useState<AppDefinition[]>([...AVAILABLE_APPS])
     const [activeTabId, setActiveTabId] = useState<string>(AVAILABLE_APPS[0].id)
 
+    // Refs to iframe elements for postMessage forwarding
+    const iframeRefs = useRef<{ [key: string]: HTMLIFrameElement | null }>({})
+
     console.log('🔍 IO Object:', io)
+
+    /**
+     * 🎓 MESSAGE BROKER
+     * 
+     * Listen for messages from child iframes and forward to other iframes.
+     * This enables cross-origin communication between the apps.
+     */
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            // Only process messages from our apps
+            if (event.data?.source === 'client-list' && event.data?.payload) {
+                console.log('📨 Platform received from client-list:', event.data.payload)
+
+                // Forward to client-portfolio iframe
+                const portfolioFrame = iframeRefs.current['client-portfolio']
+                if (portfolioFrame?.contentWindow) {
+                    portfolioFrame.contentWindow.postMessage(event.data, '*')
+                    console.log('📤 Forwarded to client-portfolio')
+                }
+            }
+        }
+
+        window.addEventListener('message', handleMessage)
+        console.log('✅ Platform message broker active')
+
+        return () => {
+            window.removeEventListener('message', handleMessage)
+        }
+    }, [])
 
     // Add a new app tab
     const addTab = (appId: string) => {
@@ -73,8 +102,6 @@ function App({ io }: AppProps) {
     const availableToAdd = AVAILABLE_APPS.filter(
         app => !openTabs.find(t => t.id === app.id)
     )
-
-    const activeApp = openTabs.find(t => t.id === activeTabId)
 
     return (
         <div className="dashboard">
@@ -140,6 +167,7 @@ function App({ io }: AppProps) {
                     openTabs.map(tab => (
                         <iframe
                             key={tab.id}
+                            ref={(el) => { iframeRefs.current[tab.id] = el }}
                             src={tab.url}
                             title={tab.title}
                             className="app-frame"

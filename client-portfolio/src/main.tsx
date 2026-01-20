@@ -1,17 +1,12 @@
 import { createRoot } from 'react-dom/client'
-import IOBrowser from '@interopio/browser'
-import { IOConnectProvider } from '@interopio/react-hooks'
 import App from './App.tsx'
 import './index.css'
 
 /**
- * 🎓 CLIENT PORTFOLIO - CONNECTED MODE
+ * 🎓 CLIENT PORTFOLIO - STANDALONE BROWSER MODE
  * 
- * We wrap the app in <IOConnectProvider>.
+ * This app runs standalone in the browser and uses BroadcastChannel
+ * for inter-app communication. No io.Connect infrastructure required.
  */
 
-createRoot(document.getElementById('root')!).render(
-  <IOConnectProvider settings={{ browser: { factory: IOBrowser } }}>
-    <App />
-  </IOConnectProvider>
-)
+createRoot(document.getElementById('root')!).render(<App />)

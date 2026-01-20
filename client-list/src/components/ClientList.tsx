@@ -1,88 +1,49 @@
-import { useState, useEffect } from 'react'
-import { useIOConnect } from '@interopio/react-hooks'
+import { useState, useCallback, useEffect } from 'react'
 import { clients, formatCurrency } from '../services/clientData'
 import type { Client } from '../services/clientData'
 import './ClientList.css'
 
 /**
- * 🎓 CLIENT LIST COMPONENT - IO.CONNECT VERSION
+ * 🎓 CLIENT LIST COMPONENT - CROSS-ORIGIN VERSION
  * 
- * Uses 'useIOConnect' to access the API and 'useChannels' for
- * channel handling (Red, Blue, etc).
+ * Uses both BroadcastChannel (for same-origin tabs) and 
+ * postMessage (for cross-origin iframes) for inter-app communication.
  */
+
+// BroadcastChannel for same-origin communication
+const channel = new BroadcastChannel('client-sync')
 
 const ClientList = () => {
     const [selectedClientId, setSelectedClientId] = useState<string | null>(null)
     const [searchTerm, setSearchTerm] = useState('')
-    const [channels, setChannels] = useState<any[]>([])
-    const [currentChannelId, setCurrentChannelId] = useState<string>('')
-
-    // 🪝 Access io.Connect API
-    const io = useIOConnect((io) => io)
-
-    // 🎓 SETUP CHANNELS
-    useEffect(() => {
-        if (!io) return
-
-        const setupChannels = async () => {
-            // Get list of channels
-            const allChannels = await io.channels.list()
-            setChannels(allChannels)
-
-            // Get current channel
-            const current = io.channels.my()
-            if (current) setCurrentChannelId(current)
-
-            // Listen for channel changes
-            const unsubscribe = io.channels.onChanged((channelId: string) => {
-                setCurrentChannelId(channelId)
-            })
-
-            return unsubscribe
-        }
-
-        setupChannels()
-    }, [io])
-
-    // 🎓 JOIN CHANNEL
-    const joinChannel = (channelId: string) => {
-        if (!io) return
-        if (channelId) {
-            io.channels.join(channelId).catch(console.error)
-        } else {
-            io.channels.leave().catch(console.error)
-        }
-    }
 
     /**
      * 🎓 HANDLE CLIENT SELECTION
      * 
-     * Publishes an FDC3 "Contact" context to the currently selected channel.
+     * Broadcasts via both BroadcastChannel AND postMessage to parent
      */
-    const handleClientClick = async (client: Client) => {
+    const handleClientClick = useCallback((client: Client) => {
         setSelectedClientId(client.id)
 
-        if (io && currentChannelId) {
-            const context = {
-                type: 'fdc3.contact',
-                name: client.name,
-                id: {
-                    email: client.email,
-                    FID: client.id
-                }
+        const message = {
+            type: 'fdc3.contact',
+            name: client.name,
+            id: {
+                email: client.email,
+                FID: client.id
             }
-
-            try {
-                // Publish using FDC3 standard or io.Connect Channels API
-                await io.channels.publish(context)
-                console.log('📡 Published context:', context)
-            } catch (err) {
-                console.error('Failed to publish context:', err)
-            }
-        } else {
-            console.warn('⚠️ No channel selected - context not broadcast')
         }
-    }
+
+        // 1. BroadcastChannel (for standalone tabs on same origin)
+        channel.postMessage(message)
+
+        // 2. postMessage to parent (for iframe embedding)
+        if (window.parent !== window) {
+            window.parent.postMessage({ source: 'client-list', payload: message }, '*')
+        }
+
+        console.log('📡 Broadcast client selection:', message)
+    }, [])
 
     // Filter clients based on search term
     const filteredClients = clients.filter(client =>
@@ -90,34 +51,15 @@ const ClientList = () => {
         client.company.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
-    const currentChannel = channels.find(c => c.id === currentChannelId)
-
-    if (!io) return <div>Loading io.Connect...</div>
-
     return (
         <div className="client-list">
-            {/* 🎓 CHANNEL SELECTOR */}
+            {/* Channel indicator */}
             <div className="channel-bar">
-                <span className="channel-label">Channel:</span>
-                <select
-                    value={currentChannelId}
-                    onChange={(e) => joinChannel(e.target.value)}
-                    className="channel-select"
-                >
-                    <option value="">-- Unlinked --</option>
-                    {channels.map(ch => (
-                        <option key={ch.id} value={ch.id} style={{ color: ch.meta?.color }}>
-                            {ch.name}
-                        </option>
-                    ))}
-                </select>
-                <div
-                    className="channel-dot"
-                    style={{
-                        background: currentChannel?.meta?.color || 'var(--text-muted)'
-                    }}
-                />
+                <span className="channel-label">Mode:</span>
+                <span className="channel-status">Connected</span>
+                <div className="channel-dot" style={{ background: '#10b981' }} />
             </div>
+
             {/* Search Bar */}
             <div className="search-container">
                 <input

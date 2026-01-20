@@ -1,100 +1,76 @@
 import { useState, useEffect } from 'react'
-import { useIOConnect } from '@interopio/react-hooks'
 import { getPortfolioByEmail, formatCurrency, formatPercent } from '../services/portfolioData'
 import type { Portfolio } from '../services/portfolioData'
 import './ClientPortfolio.css'
 
+/**
+ * 🎓 CLIENT PORTFOLIO COMPONENT - CROSS-ORIGIN VERSION
+ * 
+ * Listens for messages via both BroadcastChannel (same-origin) 
+ * and postMessage (cross-origin iframes).
+ */
+
+// BroadcastChannel for same-origin communication
+const channel = new BroadcastChannel('client-sync')
+
+interface FDC3Contact {
+    type: 'fdc3.contact'
+    name: string
+    id?: {
+        email?: string
+        FID?: string
+    }
+}
+
 const ClientPortfolio = () => {
     const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
     const [isLoading, setIsLoading] = useState(false)
-    const [channels, setChannels] = useState<any[]>([])
-    const [currentChannelId, setCurrentChannelId] = useState<string>('')
 
-    // 🪝 Access io.Connect API
-    const io = useIOConnect((io) => io)
+    const handleContactMessage = (data: FDC3Contact) => {
+        if (data?.type === 'fdc3.contact' && data.id?.email) {
+            setIsLoading(true)
+            const clientPortfolio = getPortfolioByEmail(data.id.email)
 
-    // 🎓 SETUP CHANNELS & LISTENERS
-    useEffect(() => {
-        if (!io) return
-
-        const setup = async () => {
-            // Get channels
-            setChannels(await io.channels.list())
-
-            // Get current channel
-            const current = io.channels.my()
-            if (current) setCurrentChannelId(current)
-
-            // Subscribe to channel context changes
-            // When ANY app on the SAME channel publishes data, we get it here
-            const unsubscribeContext = await io.channels.subscribe((data, context) => {
-                console.log('📡 Received channel context:', data, context)
-
-                // Check if it's a contact context
-                if (data?.type === 'fdc3.contact' && data.id?.email) {
-                    setIsLoading(true)
-                    // Simulate API fetch delay
-                    setTimeout(() => {
-                        const clientPortfolio = getPortfolioByEmail(data.id.email)
-                        setPortfolio(clientPortfolio || null)
-                        setIsLoading(false)
-                    }, 300)
-                }
-            })
-
-            // Listen for channel switching (e.g. if user switched channel externally)
-            const unsubscribeChannelInfo = io.channels.onChanged((channelId: string) => {
-                setCurrentChannelId(channelId)
-                // Clear portfolio when switching channels? Maybe not always desirable, but safer.
-                // setPortfolio(null) 
-            })
-
-            return () => {
-                unsubscribeContext()
-                unsubscribeChannelInfo()
-            }
-        }
-
-        setup()
-    }, [io])
-
-    // 🎓 JOIN CHANNEL
-    const joinChannel = (channelId: string) => {
-        if (!io) return
-        if (channelId) {
-            io.channels.join(channelId).catch(console.error)
-        } else {
-            io.channels.leave().catch(console.error)
+            setTimeout(() => {
+                setPortfolio(clientPortfolio || null)
+                setIsLoading(false)
+            }, 300)
         }
     }
 
-    const currentChannel = channels.find(c => c.id === currentChannelId)
+    useEffect(() => {
+        // 1. BroadcastChannel listener (for same-origin tabs)
+        const handleBroadcast = (event: MessageEvent<FDC3Contact>) => {
+            console.log('📡 Received BroadcastChannel:', event.data)
+            handleContactMessage(event.data)
+        }
+        channel.addEventListener('message', handleBroadcast)
 
-    if (!io) return <div>Loading io.Connect...</div>
+        // 2. postMessage listener (for cross-origin iframes)
+        const handlePostMessage = (event: MessageEvent) => {
+            // Check if it's a client-list message
+            if (event.data?.source === 'client-list' && event.data?.payload) {
+                console.log('📡 Received postMessage:', event.data.payload)
+                handleContactMessage(event.data.payload)
+            }
+        }
+        window.addEventListener('message', handlePostMessage)
+
+        console.log('✅ Listening for messages (BroadcastChannel + postMessage)')
+
+        return () => {
+            channel.removeEventListener('message', handleBroadcast)
+            window.removeEventListener('message', handlePostMessage)
+        }
+    }, [])
 
     return (
         <div className="portfolio">
-            {/* 🎓 CHANNEL SELECTOR */}
+            {/* Channel indicator */}
             <div className="channel-bar">
-                <span className="channel-label">Channel:</span>
-                <select
-                    value={currentChannelId}
-                    onChange={(e) => joinChannel(e.target.value)}
-                    className="channel-select"
-                >
-                    <option value="">-- Unlinked --</option>
-                    {channels.map(ch => (
-                        <option key={ch.id} value={ch.id} style={{ color: ch.meta?.color }}>
-                            {ch.name}
-                        </option>
-                    ))}
-                </select>
-                <div
-                    className="channel-dot"
-                    style={{
-                        background: currentChannel?.meta?.color || 'var(--text-muted)'
-                    }}
-                />
+                <span className="channel-label">Mode:</span>
+                <span className="channel-status">Listening</span>
+                <div className="channel-dot" style={{ background: '#10b981' }} />
             </div>
 
             {/* Empty state */}
@@ -108,7 +84,7 @@ const ClientPortfolio = () => {
                         </svg>
                     </div>
                     <h2>No Client Selected</h2>
-                    <p>Select a client from the Client List (on the same channel) to view their portfolio</p>
+                    <p>Select a client from the Client List to view their portfolio</p>
                 </div>
             )}
 

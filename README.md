@@ -84,19 +84,49 @@ demo-app/
 
 ---
 
+## 📋 Prerequisites
+
+| Requirement | Version | Purpose |
+|-------------|---------|---------|
+| **Node.js** | 18+ recommended | JavaScript runtime |
+| **npm** | Comes with Node.js | Package manager |
+
+**Optional (for io.Connect Desktop mode):**
+- io.Connect Desktop installed
+- Valid license key in `.env`
+
+---
+
 ## 🏃 Running the Apps
 
-### Browser Mode
+### 1. Install Dependencies (first time only)
 ```bash
-cd client-list && npx vite --port 3001
-cd client-portfolio && npx vite --port 3003
-cd platform && npx vite --port 5175
-
-# Open http://localhost:5175
+cd client-list && npm install
+cd client-portfolio && npm install
+cd platform && npm install
 ```
+
+### 2. Start the Servers
+
+**Browser Mode:**
+```bash
+# Terminal 1
+cd client-list && npx vite --port 3001
+
+# Terminal 2
+cd client-portfolio && npx vite --port 3003
+
+# Terminal 3
+cd platform && npx vite --port 5175
+```
+
+### 3. Open in Browser
+Navigate to **http://localhost:5175** to see both apps side by side.
+
+---
 
 ### io.Connect Desktop Mode
 1. Copy `configs/*.json` to io.Connect Desktop apps folder
 2. Start io.Connect Desktop
 3. Open apps from the Launcher
-4. Join both to the same channel
+4. Join both to the same channel (e.g., Red)
