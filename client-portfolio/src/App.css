@@ -1,0 +1,217 @@
+/* App Layout Styles - Client Portfolio */
+
+:root {
+  --bg-primary: #0B0E14;
+  --bg-secondary: #151A23;
+  --bg-tertiary: #1E2430;
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --accent-primary: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.4);
+  --accent-success: #10B981;
+  --accent-warning: #F59E0B;
+  --accent-danger: #EF4444;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --card-bg: #151A23;
+  --card-bg-hover: #1E2430;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.15);
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-glow: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+
+  /* Prism Theme Variables */
+  --prism-bg: #1E2430;
+  --prism-text: #E2E8F0;
+  --prism-comment: #64748B;
+  --prism-prolog: #64748B;
+  --prism-doctype: #64748B;
+  --prism-cdata: #64748B;
+  --prism-punctuation: #94A3B8;
+  --prism-namespace: #94A3B8;
+  --prism-property: #8b5cf6;
+  --prism-tag: #8b5cf6;
+  --prism-boolean: #8b5cf6;
+  --prism-number: #8b5cf6;
+  --prism-constant: #8b5cf6;
+  --prism-symbol: #8b5cf6;
+  --prism-selector: #10B981;
+  --prism-attr-name: #10B981;
+  --prism-string: #10B981;
+  --prism-char: #10B981;
+  --prism-builtin: #10B981;
+  --prism-inserted: #10B981;
+  --prism-operator: #EF4444;
+  --prism-entity: #EF4444;
+  --prism-url: #EF4444;
+  --prism-variable: #EF4444;
+  --prism-atrule: #F59E0B;
+  --prism-attr-value: #F59E0B;
+  --prism-function: #F59E0B;
+  --prism-class-name: #F59E0B;
+  --prism-regex: #F59E0B;
+  --prism-important: #F59E0B;
+  --prism-deleted: #F59E0B;
+  --prism-keyword: #6366f1;
+  --prism-selector-attr: #6366f1;
+  --prism-selector-pseudo: #6366f1;
+  --prism-language-css-selector: #6366f1;
+  --prism-pseudo-class: #6366f1;
+  --prism-pseudo-element: #6366f1;
+  --prism-combinator: #6366f1;
+  --prism-unit: #6366f1;
+  --prism-color: #6366f1;
+  --prism-hexcode: #6366f1;
+  --prism-rgb: #6366f1;
+  --prism-hsl: #6366f1;
+  --prism-function-name: #6366f1;
+  --prism-template-string: #10B981;
+  --prism-interpolation: #EF4444;
+  --prism-interpolation-punctuation: #94A3B8;
+  --prism-parameter: #F59E0B;
+  --prism-arrow-function: #F59E0B;
+  --prism-spread: #EF4444;
+  --prism-module: #6366f1;
+  --prism-import: #6366f1;
+  --prism-export: #6366f1;
+  --prism-from: #6366f1;
+  --prism-as: #6366f1;
+  --prism-default: #6366f1;
+  --prism-named-imports: #F59E0B;
+  --prism-named-exports: #F59E0B;
+  --prism-alias: #F59E0B;
+  --prism-directive: #6366f1;
+  --prism-decorator: #F59E0B;
+  --prism-annotation: #F59E0B;
+  --prism-type: #F59E0B;
+  --prism-interface: #F59E0B;
+  --prism-enum: #F59E0B;
+  --prism-extends: #6366f1;
+  --prism-implements: #6366f1;
+  --prism-this: #8b5cf6;
+  --prism-super: #8b5cf6;
+  --prism-new: #6366f1;
+  --prism-instanceof: #6366f1;
+  --prism-typeof: #6366f1;
+  --prism-void: #6366f1;
+  --prism-null: #8b5cf6;
+  --prism-undefined: #8b5cf6;
+  --prism-infinity: #8b5cf6;
+  --prism-nan: #8b5cf6;
+  --prism-global: #8b5cf6;
+  --prism-console: #F59E0B;
+  --prism-log: #F59E0B;
+  --prism-warn: #F59E0B;
+  --prism-error: #F59E0B;
+  --prism-debug: #F59E0B;
+  --prism-info: #F59E0B;
+  --prism-assert: #F59E0B;
+  --prism-clear: #F59E0B;
+  --prism-count: #F59E0B;
+  --prism-dir: #F59E0B;
+  --prism-dirxml: #F59E0B;
+  --prism-group: #F59E0B;
+  --prism-group-collapsed: #F59E0B;
+  --prism-group-end: #F59E0B;
+  --prism-table: #F59E0B;
+  --prism-time: #F59E0B;
+  --prism-trace: #F59E0B;
+  --prism-profile: #F59E0B;
+  --prism-profile-end: #F59E0B;
+  --prism-mark-timeline: #F59E0B;
+  --prism-exception: #EF4444;
+  --prism-error-message: #EF4444;
+  --prism-stack-trace: #94A3B8;
+  --prism-filename: #10B981;
+  --prism-line-number: #94A3B8;
+  --prism-highlight-bg: rgba(99, 102, 241, 0.1);
+  --prism-line-highlight-bg: rgba(99, 102, 241, 0.15);
+  --prism-line-highlight-border: rgba(99, 102, 241, 0.4);
+  --prism-copy-button-bg: #6366f1;
+  --prism-copy-button-text: #E2E8F0;
+  --prism-copy-button-hover-bg: #8b5cf6;
+  --prism-copy-button-active-bg: #4f46e5;
+  --prism-copy-button-active-text: #E2E8F0;
+  --prism-copy-button-success-bg: #10B981;
+  --prism-copy-button-success-text: #E2E8F0;
+  --prism-copy-button-error-bg: #EF4444;
+  --prism-copy-button-error-text: #E2E8F0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(180deg, rgba(22, 27, 34, 0.95), rgba(13, 17, 23, 0.9));
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.channel-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.375rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+}
+
+.channel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-success);
+  box-shadow: 0 0 8px var(--accent-success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.app-main {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
