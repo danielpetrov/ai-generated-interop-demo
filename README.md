@@ -75,7 +75,6 @@ demo-app/
 ├── client-list/           # Publisher app (port 3001)
 ├── client-portfolio/      # Subscriber app (port 3003)
 ├── platform/              # Browser Platform (port 5175)
-├── configs/               # io.Connect app definitions
 ├── SYSTEM_PROMPT.md       # Antigravity system prompt
 ├── INTEROP_RULES.md       # Development rules
 ├── PROMPT_CLIENT_LIST_AND_PORTFOLIO.md  # Generation prompt
@@ -126,7 +125,6 @@ Navigate to **http://localhost:5175** to see both apps side by side.
 ---
 
 ### io.Connect Desktop Mode
-1. Copy `configs/*.json` to io.Connect Desktop apps folder
-2. Start io.Connect Desktop
-3. Open apps from the Launcher
-4. Join both to the same channel (e.g., Red)
+1. Start io.Connect Desktop
+2. Open apps from the Launcher
+3. Join both to the same channel (e.g., Red)

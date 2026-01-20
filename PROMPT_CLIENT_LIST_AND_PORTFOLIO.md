@@ -50,10 +50,6 @@ Create 3 apps with this structure:
 - `vite.config.ts` - React plugin enabled
 - `index.html` - Points to src/main.tsx with div#root
 
-### configs/
-- `client-list.json` - io.Connect app definition
-- `client-portfolio.json` - io.Connect app definition
-
 ---
 
 ## IF USER CHOOSES: IO.CONNECT DESKTOP MODE
