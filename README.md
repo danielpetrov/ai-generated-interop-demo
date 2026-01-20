@@ -4,17 +4,18 @@ This guide explains how to set up Antigravity (Gemini Code Assist) to automatica
 
 ---
 
-## � Reference Files
+## 📁 Reference Files
 
 | File | Purpose |
 |------|---------|
 | [`SYSTEM_PROMPT.md`](./SYSTEM_PROMPT.md) | System prompt for Antigravity (always-on memory) |
-| [`INTEROP_RULES.md`](./INTEROP_RULES.md) | Conditional rules for model decision |
-| [`PROMPT_CLIENT_LIST_AND_PORTFOLIO.md`](./PROMPT_CLIENT_LIST_AND_PORTFOLIO.md) | Prompt to generate the demo apps |
+| [`INTEROP_RULES.md`](./INTEROP_RULES.md) | Conditional rule for general Interop development |
+| [`RULE_GENERATE_APPS.md`](./RULE_GENERATE_APPS.md) | Conditional rule for **generating new apps** |
+| [`PROMPT_CLIENT_LIST_AND_PORTFOLIO.md`](./PROMPT_CLIENT_LIST_AND_PORTFOLIO.md) | Simple prompt that triggers the rules |
 
 ---
 
-## 🚀 Quick Setup
+## 🚀 Quick Setup for Antigravity
 
 ### 1. Add System Prompt (Always On)
 
@@ -22,23 +23,29 @@ In Antigravity settings → **Memory**, create a new file:
 - **Name:** `interop-fdc3-standards.md`
 - **Content:** Copy from [`SYSTEM_PROMPT.md`](./SYSTEM_PROMPT.md)
 
-This makes Antigravity always act as an Interop.io expert.
+### 2. Add Conditional Rules (Model Decision)
 
-### 2. Add Conditional Rule
+**Important:** unlike the System Prompt, these rules should **NOT** be "Always On". Add them as standard rules so Antigravity can decide **when** to use them based on context.
 
-In Antigravity settings → **Add Rules**:
-- **Description:** `Interop.io Development Rules - Lessons Learned`
+In Antigravity settings → **Add Rules** (create two separate rules):
+
+**Rule A: General Development Guidelines**
+- **Description:** `Interop.io Development Rules`
 - **Content:** Copy from [`INTEROP_RULES.md`](./INTEROP_RULES.md)
+- *Why?* This provides lessons learned and patterns for general coding tasks.
 
-This triggers when building Interop.io apps.
+**Rule B: App Generation Logic**
+- **Description:** `Generate Interop Apps`
+- **Content:** Copy from [`RULE_GENERATE_APPS.md`](./RULE_GENERATE_APPS.md)
+- *Why?* This contains the logic to Ask "Browser vs Desktop" before generating code.
 
 ### 3. Generate the Apps
 
-Copy the prompt from [`PROMPT_CLIENT_LIST_AND_PORTFOLIO.md`](./PROMPT_CLIENT_LIST_AND_PORTFOLIO.md) and paste it into the chat.
+Simply copy the prompt from [`PROMPT_CLIENT_LIST_AND_PORTFOLIO.md`](./PROMPT_CLIENT_LIST_AND_PORTFOLIO.md):
 
-The chatbot will ask: **"Browser or io.Connect Desktop?"**
-- **Browser:** Creates platform + 2 apps with BroadcastChannel
-- **io.Connect Desktop:** Creates 2 apps with IOConnectProvider
+> **"Generate the client list and portfolio apps."**
+
+The chatbot will detect this request and ask: **"Browser or io.Connect Desktop?"** based on Rule B.
 
 ---
 
