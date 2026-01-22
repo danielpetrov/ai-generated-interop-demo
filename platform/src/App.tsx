@@ -22,14 +22,14 @@ const AVAILABLE_APPS: AppDefinition[] = [
         id: 'client-list',
         name: 'client-list',
         title: 'Client List',
-        url: 'http://localhost:3001',
+        url: 'http://localhost:5175',
         icon: '👥'
     },
     {
         id: 'client-portfolio',
         name: 'client-portfolio',
         title: 'Client Portfolio',
-        url: 'http://localhost:3003',
+        url: 'http://localhost:5176',
         icon: '📊'
     }
 ]
