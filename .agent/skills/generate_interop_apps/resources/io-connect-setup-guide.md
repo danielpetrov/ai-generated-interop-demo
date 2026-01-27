@@ -1,0 +1,154 @@
+# io.Connect Browser Context Sharing Setup Guide
+
+To set up an io.Connect Browser Platform project with two applications that share context, you must configure one application as the Main Platform (the hub that manages the environment) and the others as Client Applications (which connect to that hub).
+
+Based on the provided documentation, here is the setup process using React and the @interopio/react-hooks library.
+
+## 1. Main Platform Setup
+
+The Main application initializes the environment. It requires the `@interopio/browser-platform` library. You must initialize it using the `IOConnectProvider` and the `browserPlatform` configuration property.
+
+**Installation:**
+```bash
+npm install @interopio/react-hooks @interopio/browser-platform
+```
+
+**Platform App Code:**
+```javascript
+import React from "react";
+import ReactDOM from "react-dom/client";
+import IOConnectBrowserPlatform from "@interopio/browser-platform";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import MainLayout from "./MainLayout"; // Your layout component
+
+// Configuration for the Main Platform
+const settings = {
+    browserPlatform: {
+        factory: IOConnectBrowserPlatform,
+        config: {
+            licenseKey: "YOUR_LICENSE_KEY" // Required for Browser Platform
+        }
+    }
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+    // The Provider initializes the library and exposes the 'io' object via context
+    <IOConnectProvider settings={settings} fallback={<div>Loading Platform...</div>}>
+        <MainLayout />
+    </IOConnectProvider>
+);
+```
+
+## 2. Client Application Setup
+
+The Client applications (App A and App B) connect to the Main Platform. They require the `@interopio/browser` library. You configure these using the `browser` property in the provider settings.
+
+**Installation:**
+```bash
+npm install @interopio/react-hooks @interopio/browser
+```
+
+**Client App Code (App A & App B):**
+```javascript
+import React from "react";
+import ReactDOM from "react-dom/client";
+import IOConnectBrowser from "@interopio/browser";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import ClientComponent from "./ClientComponent";
+
+// Configuration for Client Apps
+const settings = {
+    browser: {
+        factory: IOConnectBrowser
+    }
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+    <IOConnectProvider settings={settings} fallback={<div>Connecting...</div>}>
+        <ClientComponent />
+    </IOConnectProvider>
+);
+```
+
+## 3. Sharing Context (Update & Subscribe)
+
+To share data, one app updates a named shared context (e.g., "ClientContext") and the other subscribes to it.
+
+### App A: Updating Context (Publisher)
+
+You can use the `useIOConnect` hook to access the `io` object and the `update` method. This method merges new data with the existing context.
+
+```javascript
+import React from "react";
+import { useIOConnect } from "@interopio/react-hooks";
+
+const ClientList = () => {
+    // Create a function to update context
+    const selectClient = useIOConnect(io => async (clientId) => {
+        // "ClientContext" is the shared context name
+        // update() merges new data with existing data
+        await io.contexts.update("ClientContext", { selectedId: clientId });
+        console.log(`Context updated for client: ${clientId}`);
+    });
+
+    return (
+        <button onClick={() => selectClient(101)}>
+            Select Client 101
+        </button>
+    );
+};
+
+export default ClientList;
+```
+
+### App B: Subscribing to Context (Subscriber)
+
+Use the `useContext` hook to access the API via `IOConnectContext`. You must manage the subscription lifecycle within a `useEffect` hook. It is critical to invoke the unsubscribe function in the `useEffect` cleanup return to prevent memory leaks when the component unmounts.
+
+```javascript
+import React, { useState, useEffect, useContext } from "react";
+import { IOConnectContext } from "@interopio/react-hooks";
+
+const ClientDetails = () => {
+    const [clientData, setClientData] = useState({});
+    const io = useContext(IOConnectContext); // Access API directly via Context
+
+    useEffect(() => {
+        // Ensure io is initialized
+        if (!io) return;
+
+        let unsubscribe;
+        const contextName = "ClientContext";
+
+        // Handler function for context updates
+        const updateHandler = (data) => {
+            console.log("Received context update:", data);
+            setClientData(data);
+        };
+
+        const setupSubscription = async () => {
+            // Subscribe returns a promise resolving to an unsubscribe function
+            unsubscribe = await io.contexts.subscribe(contextName, updateHandler);
+        };
+
+        setupSubscription();
+
+        // Cleanup function to unsubscribe on unmount
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
+    }, [io]); // Dependency ensures this runs when io is ready
+
+    return (
+        <div>
+            <h3>Selected Client ID: {clientData.selectedId || "None"}</h3>
+        </div>
+    );
+};
+
+export default ClientDetails;
+```

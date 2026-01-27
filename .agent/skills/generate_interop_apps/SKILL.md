@@ -15,6 +15,17 @@
 ## Resources
 
 - **Technical Briefing**: For a comprehensive conceptual overview, architectural diagrams, and high-level mentoring explanations, refer to [`resources/TECHNICAL_BRIEFING.md`](resources/TECHNICAL_BRIEFING.md).
+- **Setup Guide**: Detailed step-by-step setup for browser context sharing [`resources/io-connect-setup-guide.md`](resources/io-connect-setup-guide.md).
+- **Architecture Mindmap**: Visual breakdown of platform components [`resources/io-connect-components-mindmap.md`](resources/io-connect-components-mindmap.md).
+
+## AI-Assisted Documentation (NotebookLM)
+
+You have access to a rich library of IO.Connect documentation and generated assets via the `notebooklm` skill.
+
+1.  **Live Querying**: You can use the `notebooklm` skill to query specific details from the "Interop.io Platform Overview" notebook (ID: `2d380932-aed8-44d2-8813-6dec341e4400`).
+2.  **Proactive Generation**: If you encounter a complex topic or need a specific architectural diagram that is missing:
+    *   **PROMPT the user** to let you generate it using NotebookLM (e.g., "Would you like me to generate a specific guide for [Topic] in your NotebookLM?").
+    *   Use tools like `mcp_notebooklm_report_create` or `mcp_notebooklm_mind_map_create` upon approval.
 
 Browser-native messaging **MUST NOT** be used.
 

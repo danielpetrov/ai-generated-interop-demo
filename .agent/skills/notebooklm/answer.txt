@@ -1,0 +1,31 @@
+Based on the provided documentation and the Technical Buyer's Guide, the io.Connect platform is composed of client runtimes, core infrastructure, optional server-side components for enterprise management, and integration extensions.
+Here are the key components described in the notebook:
+1. Client Runtimes (Runtime Environments)
+These are the containers and environments where the user interacts with integrated applications.
+• io.Connect Desktop: An Electron-based container acting as the runtime environment installed on the user's machine1. It manages windows, orchestrates the Workspaces UI, provides native bridges for non-web apps (like .NET or Java), and injects io.Connect libraries into web applications2.
+• io.Connect Browser: A zero-install, browser-based version of the platform focused on the presentation and integration of web applications without requiring a desktop installation13.
+2. Core Infrastructure
+• Common Bus: This serves as the backend for inter-application communication. It routes messages between applications (regardless of their technology stack) and the communication hub, enabling features like context sharing and intents34.
+3. Server-Side & Management Components
+These optional components extend the platform's capabilities for enterprise control, monitoring, and connectivity.
+• io.Manager: A server-side application providing shared central storage for configuration, app definitions, Layouts, and preferences14. It includes an Admin UI for management and allows for monitoring user interactions4.
+• io.Insights: A telemetry solution based on the OpenTelemetry standard5. It collects metrics, traces, and logs regarding application performance and user workflows to help optimize business processes and infrastructure15.
+• io.Bridge: A server-side communications hub that extends interoperability beyond a single desktop1. It bridges the gap between different devices (e.g., PC to tablet) and environments (e.g., browser app to native app)6.
+4. Integration Extensions & AI
+• io.Connect MCP Server: A component that facilitates Agentic AI7. It allows AI models (such as Anthropic’s Claude) to interact with the desktop environment, access context, and trigger workflows1.
+• Application Adapters: Connectors for third-party software such as Microsoft Office (Excel, Outlook), Bloomberg Terminal, and Salesforce, allowing them to participate in the unified io.Connect environment89.
+5. System Applications
+These are specific internal applications that handle core UI and logic functions within the platform:
+• io.Connect Launchpad: The default shell application used as the launcher for apps10.
+• Workspaces App: A specialized web app (type "workspaces") that hosts and manages the Layouts of Workspaces11.
+• Intent Resolver App: A UI application that prompts users to select a handler when an Intent is raised and multiple compatible apps are available12.
+• Web Group App: A service app (type "webGroup") that handles the grouping of io.Connect Windows1314.
+6. JavaScript Libraries
+The documentation details several libraries used to build or connect applications:
+• @interopio/desktop: The core library for desktop projects15.
+• @interopio/browser & @interopio/browser-platform: Libraries for browser-based projects15.
+• @interopio/react-hooks: A wrapper library for integrating React applications15.
+• @interopio/workspaces-api: Enables programmatic control of Workspaces16.
+• @interopio/intents-resolver-api: Allows the creation of custom Intent Resolver applications17.
+
+EXTREMELY IMPORTANT: Is that ALL you need to know? You can always ask another question! Think about it carefully: before you reply to the user, review their original request and this answer. If anything is still unclear or missing, ask me another comprehensive question that includes all necessary context (since each question opens a new browser session).

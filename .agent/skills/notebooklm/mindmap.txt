@@ -1,0 +1,65 @@
+Based on the provided notebook, here is a hierarchical text-based mindmap of the key components of the io.Connect platform:
+• io.Connect Platform Core Architecture
+    ◦ Client Runtimes (The Runtime Environment)
+        ▪ io.Connect Desktop
+            • Electron-based container installed on the user's machine1.
+            • Injects io.Connect JavaScript libraries into web apps1.
+            • Provides native bridges for non-web apps (.NET, Java, Delphi, etc.)1.
+            • Manages windows and orchestrates Workspaces UI1.
+        ▪ io.Connect Browser
+            • Zero-install, browser-based version2.
+            • Facilitates integration of web applications without a desktop install2.
+    ◦ Core Infrastructure
+        ▪ Common Bus
+            • Backbone for inter-app communication2.
+            • Routes messages using optimized messaging (WebSockets)2.
+            • Hosts central configuration, app directory, and shared contexts2.
+• Server-Side & Management Components (Optional/Extensions)
+    ◦ io.Manager
+        ▪ Server-side application for shared central storage3.
+        ▪ Stores configuration, app definitions, Layouts, and preferences3.
+        ▪ Includes an Admin UI for management and user monitoring3.
+    ◦ io.Insights
+        ▪ Telemetry solution based on the OpenTelemetry standard4.
+        ▪ Collects metrics, traces, and logs regarding app performance and workflows4.
+    ◦ io.Bridge
+        ▪ Server-side communications hub5.
+        ▪ Extends interoperability beyond a single desktop (e.g., PC to tablet, browser to native)5.
+• Integration Extensions & AI
+    ◦ io.Connect MCP Server
+        ▪ Foundation for "Agentic AI" on the desktop6.
+        ▪ Allows AI (like Claude) to trigger workflows, access context, and launch apps7.
+    ◦ Application Adapters
+        ▪ Connectors for third-party software (Microsoft Office, Bloomberg, Salesforce)8.
+• System Applications (Internal Logic & UI)
+    ◦ io.Connect Launchpad
+        ▪ The default shell application/launcher9.
+    ◦ Workspaces App
+        ▪ Specialized web app (type "workspaces") that hosts and manages Workspace Layouts10.
+    ◦ Intent Resolver App
+        ▪ UI application allowing users to select a handler when multiple apps can fulfill an Intent11.
+        ▪ Can be customized or replaced using the Resolver API12.
+    ◦ Web Group App
+        ▪ Service app (type "webGroup") handling io.Connect Window grouping13.
+• Supported Application Types (The "Content")
+    ◦ Window (Web apps running in io.Connect Windows)14.
+    ◦ EXE (Native apps managed by the platform)15.
+    ◦ Node.js (Local or Remote Node.js environments)16.
+    ◦ Citrix App (Virtual apps)17.
+    ◦ ClickOnce (Apps deployed via ClickOnce)18.
+    ◦ Batch & Command Files (Scripts)19.
+    ◦ Child Windows (Windows spawned by native apps)20.
+    ◦ Service Windows (Invisible/Background apps)21.
+• Interoperability Capabilities (The "Glue")
+    ◦ Shared Contexts (Key/Value storage for global state)22.
+    ◦ Channels (UI-driven context synchronization)23.
+    ◦ Intents (Workflow orchestration/Action requests)24.
+    ◦ Interop (RPC Request/Response and Real-time Streaming)25,26.
+• Developer Libraries (SDKs)
+    ◦ @interopio/desktop: Core library for desktop projects27.
+    ◦ @interopio/browser: Core library for browser projects27.
+    ◦ @interopio/react-hooks: Wrapper library for React integration28.
+    ◦ @interopio/workspaces-api: For programmatic control of Workspaces29.
+    ◦ @interopio/intents-resolver-api: For building custom Intent Resolvers30.
+
+EXTREMELY IMPORTANT: Is that ALL you need to know? You can always ask another question! Think about it carefully: before you reply to the user, review their original request and this answer. If anything is still unclear or missing, ask me another comprehensive question that includes all necessary context (since each question opens a new browser session).
