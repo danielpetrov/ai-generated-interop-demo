@@ -16,13 +16,6 @@
 
 - **Technical Briefing**: For a comprehensive conceptual overview, architectural diagrams, and high-level mentoring explanations, refer to [`resources/TECHNICAL_BRIEFING.md`](resources/TECHNICAL_BRIEFING.md).
 
-## Interop Priority Rule
-
-Explicit data exchange **MUST** use the following order:
-1. `io.interop` methods
-2. `io.intents`
-3. `io.contexts` / `io.channels`
-
 Browser-native messaging **MUST NOT** be used.
 
 ## Initialization (React)
