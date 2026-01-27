@@ -17,6 +17,8 @@
 - **Technical Briefing**: For a comprehensive conceptual overview, architectural diagrams, and high-level mentoring explanations, refer to [`resources/TECHNICAL_BRIEFING.md`](resources/TECHNICAL_BRIEFING.md).
 - **Setup Guide**: Detailed step-by-step setup for browser context sharing [`resources/io-connect-setup-guide.md`](resources/io-connect-setup-guide.md).
 - **Architecture Mindmap**: Visual breakdown of platform components [`resources/io-connect-components-mindmap.md`](resources/io-connect-components-mindmap.md).
+- **External Links**: Official docs, GitHub repos, NPM packages, and FDC3 resources [`resources/external-links.md`](resources/external-links.md).
+- **React/JS Developer Guide**: Comprehensive code reference for all APIs (Contexts, Channels, Intents, Interop, Streams) [`resources/react-js-developer-guide.md`](resources/react-js-developer-guide.md).
 
 ## AI-Assisted Documentation (NotebookLM)
 
@@ -371,3 +373,84 @@ export const ioFactory = () =>
 - custom WebSocket message buses
 - SharedWorker
 - MessageChannel
+
+---
+
+## UI Styling (Interop Apps)
+
+### Dark Theme Colors
+```css
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.8);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(148, 163, 184, 0.1);
+  --accent: #3b82f6;
+}
+```
+
+### Glassmorphism Cards
+```css
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+```
+
+### Full Width Layout
+```css
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  padding: 1.5rem;
+}
+```
+
+---
+
+## Troubleshooting
+
+### Error: "Platform already started"
+**Cause:** React StrictMode double-mounting
+
+**Fix:** Remove StrictMode for Platform main.tsx:
+```typescript
+createRoot(document.getElementById('root')!).render(
+  <IOConnectProvider settings={settings}>
+    <App />
+  </IOConnectProvider>
+);
+```
+
+### Error: "Method already registered"
+**Cause:** Double registration in StrictMode
+
+**Fix:** Use ref guard pattern (see Interop Methods section above)
+
+### Error: "Apps not communicating"
+**Cause:** Missing provider or wrong context name
+
+**Fix:**
+1. Ensure `IOConnectProvider` wraps app in `main.tsx`
+2. Verify context name matches between publisher and subscriber
+3. Check browser console for initialization errors
+
+### Error: "White screen / Blank iframe"
+**Cause:** Wrong port or initialization failure
+
+**Fix:**
+1. Open iframe URL directly to see error
+2. Check port numbers match in Platform
+3. Verify licenseKey for Browser Platform
+
