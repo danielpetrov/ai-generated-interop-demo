@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.portfolio-app {
+  width: 100vw;
+  height: 100vh;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+}
+
+.portfolio-app.empty {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state {
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.empty-state p {
+  font-size: 0.9375rem;
+  color: #64748b;
+}
+
+.portfolio-header {
+  width: 100%;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.client-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.client-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.client-info-large h1 {
+  font-size: 1.5rem;
+  color: #f1f5f9;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.client-info-large .company {
+  font-size: 0.9375rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.client-info-large .email {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.portfolio-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-1px);
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.stat-card.primary {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.375rem;
+}
+
+.stat-card.primary .stat-value {
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+.stat-change,
+.stat-meta {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.stat-change.positive,
+.holding-change.positive {
+  color: #10b981;
+}
+
+.stat-change.negative,
+.holding-change.negative {
+  color: #ef4444;
+}
+
+.portfolio-section {
+  width: 100%;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.portfolio-section h3 {
+  font-size: 1.0625rem;
+  color: #f1f5f9;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.holdings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.holding-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.holding-item:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(59, 130, 246, 0.2);
+  transform: translateX(2px);
+}
+
+.holding-symbol {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.holding-details {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.holding-value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.holding-change {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.holding-change.positive {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.holding-change.negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.portfolio-app::-webkit-scrollbar {
+  width: 6px;
+}
+
+.portfolio-app::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.portfolio-app::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}

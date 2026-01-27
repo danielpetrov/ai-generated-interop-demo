@@ -27,7 +27,7 @@ Browser-native messaging **MUST NOT** be used.
 
 ## Initialization (React)
 
-### Provider-Based Initialization (Preferred)
+### Provider-Based Initialization - Desktop (Preferred)
 ```typescript
 import IODesktop from "@interopio/desktop";
 import { IOConnectProvider } from "@interopio/react-hooks";
@@ -49,6 +49,47 @@ root.render(
   </IOConnectProvider>
 );
 ```
+
+### Provider-Based Initialization - Browser Platform
+```typescript
+import IOBrowserPlatform from "@interopio/browser-platform";
+import { IOConnectProvider } from "@interopio/react-hooks";
+
+const settings = {
+  browserPlatform: {
+    factory: IOBrowserPlatform,
+    config: {
+      // REQUIRED: licenseKey is mandatory for Browser Platform
+      licenseKey: import.meta.env.VITE_IOCONNECT_LICENSE_KEY,
+    },
+  },
+};
+
+root.render(
+  <IOConnectProvider settings={settings} fallback={<div>Loading Platform...</div>}>
+    <App />
+  </IOConnectProvider>
+);
+```
+
+### Provider-Based Initialization - Browser Client
+```typescript
+import IOBrowser from "@interopio/browser";
+import { IOConnectProvider } from "@interopio/react-hooks";
+
+const settings = {
+  browser: {
+    factory: IOBrowser,
+  },
+};
+
+root.render(
+  <IOConnectProvider settings={settings} fallback={<div>Loading...</div>}>
+    <App />
+  </IOConnectProvider>
+);
+```
+
 
 ## Shared Contexts
 
@@ -73,7 +114,7 @@ export const ClientSubscriber = () => {
   const [client, setClient] = useState<ClientContext | null>(null);
 
   useIOConnect((io) => {
-    const unsubscribe = io.contexts.subscribe<ClientContext>("Client", setClient);
+    const unsubscribe = io.contexts.subscribe("Client", (data: ClientContext) => setClient(data));
     return unsubscribe;
   }, []);
 
@@ -81,9 +122,11 @@ export const ClientSubscriber = () => {
 };
 ```
 
-### Publish (Typed, Partial Update)
+### Publish (Data is typed via the object)
 ```typescript
-await io.contexts.update<ClientContext>("Client", {
+// Note: io.Connect Browser doesn't use type arguments
+// The context data type is inferred from the object structure
+await io.contexts.update("Client", {
   type: "fdc3.contact",
   id: { email: "alice@corp.com" },
   name: "Alice",
