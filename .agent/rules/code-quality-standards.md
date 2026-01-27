@@ -3,6 +3,11 @@ trigger: always_on
 description: Code Quality Requirements for Interop Apps - Lessons Learned
 ---
 
+---
+trigger: always_on
+description: Code Quality Requirements for Interop Apps - Lessons Learned
+---
+
 # Rule: Code Quality and UI Standards for Interop Apps
 
 ## TypeScript Requirements
