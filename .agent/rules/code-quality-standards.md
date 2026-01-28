@@ -12,6 +12,63 @@ description: Code Quality Requirements - Global Standards
 - **Type event handlers** - Use `MessageEvent`, `React.ChangeEvent<HTMLInputElement>`, etc.
 - **Export and share interfaces** - Reuse types across components
 - **State uses generics** - `useState<Client | null>(null)`
+- **Use `import type` for type-only imports** - Required when `verbatimModuleSyntax` is enabled
+
+```typescript
+// ✅ Correct
+import type { Client, Portfolio } from "./types";
+import { CONTEXT_NAME } from "./types";
+
+// ❌ Wrong - will error with verbatimModuleSyntax
+import { Client, Portfolio, CONTEXT_NAME } from "./types";
+```
+
+---
+
+## Vite Project Structure (Mandatory)
+
+### No Parent Directory Imports
+Vite cannot resolve imports from outside the project root. Each app must have its own copy of shared files.
+
+```typescript
+// ❌ Wrong - Vite will fail
+import { Client } from "../../shared/types";
+
+// ✅ Correct - copy files into each app's src/
+import { Client } from "./types";
+```
+
+### Multi-App Monorepo Pattern
+When creating multiple Vite apps that share code:
+1. Copy shared `types.ts` and `mockData.ts` into each app's `src/` folder
+2. Or use a proper monorepo setup with workspaces and build step
+
+---
+
+## io.Connect React Patterns (Mandatory)
+
+### Context Access - Use React's useContext
+```typescript
+// ✅ Correct
+import { useContext } from "react";
+import { IOConnectContext } from "@interopio/react-hooks";
+
+const io = useContext(IOConnectContext);
+
+// ❌ Wrong - useIOConnectContext doesn't exist
+import { useIOConnectContext } from "@interopio/react-hooks";
+```
+
+### useIOConnect Hook - For Subscriptions
+```typescript
+import { useIOConnect } from "@interopio/react-hooks";
+
+// Use for subscriptions with cleanup
+useIOConnect(async (io) => {
+  const unsubscribe = await io.contexts.subscribe("ContextName", callback);
+  return () => unsubscribe(); // Cleanup function
+}, []);
+```
 
 ---
 
@@ -78,6 +135,7 @@ Before saying "done", verify:
 - [ ] No `any` types
 - [ ] All parameters typed
 - [ ] All event handlers typed
+- [ ] Type-only imports use `import type`
 
 **Styling:**
 - [ ] Dark theme applied (`#0f172a`)
@@ -101,6 +159,9 @@ Before saying "done", verify:
 | Module not exported | Interface not exported | Add `export` keyword, restart server |
 | White screen / Blank iframe | Wrong port or init hang | Check ports, open iframe URL directly |
 | CSS not updating | Browser cache | Hard refresh, restart dev servers |
+| `does not provide an export named 'X'` | Importing from parent directory | Copy shared files into each app's `src/` folder |
+| `useIOConnectContext is not exported` | Wrong hook name | Use `useContext(IOConnectContext)` instead |
+| `type must be imported using type-only import` | verbatimModuleSyntax enabled | Use `import type { X }` for types |
 
 ---
 
