@@ -376,49 +376,6 @@ export const ioFactory = () =>
 
 ---
 
-## UI Styling (Interop Apps)
-
-### Dark Theme Colors
-```css
-:root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: rgba(30, 41, 59, 0.8);
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: rgba(148, 163, 184, 0.1);
-  --accent: #3b82f6;
-}
-```
-
-### Glassmorphism Cards
-```css
-.card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: all 0.2s ease;
-}
-
-.card:hover {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(148, 163, 184, 0.2);
-}
-```
-
-### Full Width Layout
-```css
-.app-container {
-  width: 100vw;
-  height: 100vh;
-  padding: 1.5rem;
-}
-```
-
----
-
 ## Troubleshooting
 
 ### Error: "Platform already started"
