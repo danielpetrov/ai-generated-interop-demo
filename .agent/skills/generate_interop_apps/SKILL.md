@@ -12,24 +12,128 @@
 - Prefer **Shared Contexts / Channels** for state synchronization.
 - Output **TypeScript only**.
 
+---
+
+## 🚦 Interaction Protocol
+
+When a user requests to build Interop apps, do NOT start coding immediately.
+
+### Step 1: Ask for Interaction Mode
+You MUST first ask the user:
+
+> "Do you want to run these apps in a standalone **BROWSER** (using io.Connect Browser) or inside **IO.CONNECT DESKTOP**?"
+
+Also ask:
+> "Would you like **Mentor Mode** (I explain *what* I'm doing and *why*) or **Expert Mode** (just the code)?"
+
+### Step 2: Wait for Response
+
+### Step 3: Generate Based on Response
+
+---
+
+## 🌐 io.Connect Browser Overview
+
+Web platform for integrating web apps:
+- Enables standalone web apps to share data, expose functionality, and manipulate windows
+- Can be used as a Progressive Web App (PWA)
+- Main app acts as a hub using `@interopio/browser-platform` library
+- Client apps use `@interopio/browser` library
+- Provides communication connection between all client apps
+
+### Key Features:
+- App Management, Intents, Shared Contexts, Channels
+- Interop (methods and streams)
+- Window Management, Workspaces, Layouts
+- Plugins, Notifications, Dev Tools
+- io.Manager integration
+- Application Adapters for third-party apps
+- Cross-machine interoperability via io.Connect Gateway
+
+### If BROWSER Mode Selected:
+
+**Follow-up Question:** Ask if they already have a platform app:
+- **Platform exists:** Only need to create client app(s)
+- **Starting from scratch:** Need to create both platform app and client app(s)
+
+**Architecture:**
+- Create a **Platform App** (host) that embeds other apps as iframes
+- Use CLI tool: https://docs.interop.io/browser/developers/cli/index.html
+- Or install directly (requires license key)
+
+**Communication:**
+- Use **Shared Contexts** by default: https://docs.interop.io/browser/capabilities/data-sharing/shared-contexts/index.html
+
+**Project Structure:**
+```
+platform/     (Vite + React, port 5175) - @interopio/browser-platform
+app-1/        (Vite + React, port 3001) - @interopio/browser
+app-2/        (Vite + React, port 3002) - @interopio/browser
+```
+
+---
+
+## 🖥️ io.Connect Desktop Overview
+
+Desktop container for integrating applications:
+- Native desktop experience with workspace management
+- Full io.Connect API including layouts and workspaces
+- Supports window management and application lifecycle
+
+### If IO.CONNECT DESKTOP Mode Selected:
+
+**Follow-up Question:** Ask if they have io.Connect Desktop installed:
+- **Not installed:** Direct to https://interop.io/free-trial/
+- **Already installed:** Ask if they want to:
+  - Use the seed project: https://docs.interop.io/desktop/developers/seed-project/index.html
+  - Just add a client app
+
+**Communication:**
+- Use `@interopio/react-hooks` with `IOConnectProvider`
+- Use `@interopio/desktop` factory
+
+**State Management:**
+- `io.contexts` - Shared contexts
+- `io.channels` - Publish/subscribe pattern
+- `io.workspaces` - Workspace management
+
+**Project Structure:**
+```
+app-1/        (Vite + React)
+app-2/        (Vite + React)
+configs/      (JSON app definitions)
+```
+
+---
+
 ## Resources
 
-- **Technical Briefing**: For a comprehensive conceptual overview, architectural diagrams, and high-level mentoring explanations, refer to [`resources/TECHNICAL_BRIEFING.md`](resources/TECHNICAL_BRIEFING.md).
-- **Setup Guide**: Detailed step-by-step setup for browser context sharing [`resources/io-connect-setup-guide.md`](resources/io-connect-setup-guide.md).
-- **Architecture Mindmap**: Visual breakdown of platform components [`resources/io-connect-components-mindmap.md`](resources/io-connect-components-mindmap.md).
-- **External Links**: Official docs, GitHub repos, NPM packages, and FDC3 resources [`resources/external-links.md`](resources/external-links.md).
-- **React/JS Developer Guide**: Comprehensive code reference for all APIs (Contexts, Channels, Intents, Interop, Streams) [`resources/react-js-developer-guide.md`](resources/react-js-developer-guide.md).
+- **Technical Briefing**: [`resources/TECHNICAL_BRIEFING.md`](resources/TECHNICAL_BRIEFING.md)
+- **Setup Guide**: [`resources/io-connect-setup-guide.md`](resources/io-connect-setup-guide.md)
+- **Architecture Mindmap**: [`resources/io-connect-components-mindmap.md`](resources/io-connect-components-mindmap.md)
+- **External Links**: [`resources/external-links.md`](resources/external-links.md)
+- **React/JS Developer Guide**: [`resources/react-js-developer-guide.md`](resources/react-js-developer-guide.md)
+
+## 📚 Key Documentation Links
+
+| Topic | URL |
+|-------|-----|
+| Browser Platform | https://docs.interop.io/browser/ |
+| Browser CLI | https://docs.interop.io/browser/developers/cli/index.html |
+| Shared Contexts (Browser) | https://docs.interop.io/browser/capabilities/data-sharing/shared-contexts/index.html |
+| Desktop Overview | https://docs.interop.io/desktop/getting-started/what-is-io-connect-desktop/general-overview/index.html |
+| React Integration | https://docs.interop.io/desktop/getting-started/how-to/interop-enable-your-apps/react/index.html |
+| Channels | https://docs.interop.io/desktop/capabilities/data-sharing/channels/javascript/index.html |
+| FDC3 | https://fdc3.finos.org/docs/context/overview |
 
 ## AI-Assisted Documentation (NotebookLM)
 
-You have access to a rich library of IO.Connect documentation and generated assets via the `notebooklm` skill.
+You have access to a rich library of IO.Connect documentation via the `notebooklm` skill.
 
-1.  **Live Querying**: You can use the `notebooklm` skill to query specific details from the "Interop.io Platform Overview" notebook (ID: `2d380932-aed8-44d2-8813-6dec341e4400`).
-2.  **Proactive Generation**: If you encounter a complex topic or need a specific architectural diagram that is missing:
-    *   **PROMPT the user** to let you generate it using NotebookLM (e.g., "Would you like me to generate a specific guide for [Topic] in your NotebookLM?").
-    *   Use tools like `mcp_notebooklm_report_create` or `mcp_notebooklm_mind_map_create` upon approval.
+1. **Live Querying**: Query the "Interop.io Platform Overview" notebook (ID: `2d380932-aed8-44d2-8813-6dec341e4400`)
+2. **Proactive Generation**: Generate guides using `mcp_notebooklm_report_create` or `mcp_notebooklm_mind_map_create` upon approval
 
-Browser-native messaging **MUST NOT** be used.
+**Browser-native messaging MUST NOT be used.**
 
 ## Initialization (React)
 
@@ -373,6 +477,49 @@ export const ioFactory = () =>
 - custom WebSocket message buses
 - SharedWorker
 - MessageChannel
+
+---
+
+## UI Styling (Interop Apps)
+
+### Dark Theme Colors
+```css
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.8);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(148, 163, 184, 0.1);
+  --accent: #3b82f6;
+}
+```
+
+### Glassmorphism Cards
+```css
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+```
+
+### Full Width Layout
+```css
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  padding: 1.5rem;
+}
+```
 
 ---
 
