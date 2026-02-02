@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "@interopio/browser": "^4.2.2",
-    "@interopio/desktop": "^6.16.0",
     "@interopio/react-hooks": "^4.2.2",
-    "@interopio/workspaces-api": "^4.2.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

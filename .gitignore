@@ -9,9 +9,6 @@ dist/
 .env.local
 .env.*.local
 
-# Antigravity/Agent files
-.agent/
-
 # IDE
 .vscode/
 .idea/

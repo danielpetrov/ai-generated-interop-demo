@@ -1,12 +1,26 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { createRoot } from "react-dom/client";
+import IOBrowser from "@interopio/browser";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import App from "./App.tsx";
+import "./index.css";
 
-/**
- * 🎓 CLIENT LIST - STANDALONE BROWSER MODE
- * 
- * This app runs standalone in the browser and uses BroadcastChannel
- * for inter-app communication. No io.Connect infrastructure required.
- */
+const settings = {
+  browser: {
+    factory: IOBrowser,
+  },
+};
 
-createRoot(document.getElementById('root')!).render(<App />)
+createRoot(document.getElementById("root")!).render(
+  <IOConnectProvider settings={settings} fallback={<LoadingScreen />}>
+    <App />
+  </IOConnectProvider>
+);
+
+function LoadingScreen() {
+  return (
+    <div className="loading-screen">
+      <div className="spinner"></div>
+      <p>Connecting to Platform...</p>
+    </div>
+  );
+}
