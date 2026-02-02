@@ -52,9 +52,28 @@ Web platform for integrating web apps:
 
 ### If BROWSER Mode Selected:
 
-**Follow-up Question:** Ask if they already have a platform app:
-- **Platform exists:** Only need to create client app(s)
-- **Starting from scratch:** Need to create both platform app and client app(s)
+### Platform App Decision (CRITICAL)
+
+**You MUST ask this question FIRST:**
+
+> "Do you already have a Platform App running or provided by your organization?"
+
+**Response Handling:**
+
+**If Platform Exists:**
+- Generate **ONLY** client apps
+- Client apps use `@interopio/browser`
+- Skip Platform code entirely
+
+**If Starting from Scratch:**
+- Generate **Platform App** + client apps
+- Platform uses `@interopio/browser-platform`
+- Requires license key: `VITE_IOCONNECT_LICENSE_KEY`
+
+**Why This Matters:**
+- Prospects often have existing Platform Apps
+- Duplicate Platform Apps cause initialization conflicts
+- Saves development time and avoids confusion
 
 **Architecture:**
 - Create a **Platform App** (host) that embeds other apps as iframes
@@ -265,10 +284,16 @@ export const SafeContextSub = () => {
 };
 ```
 
-## Channels
+## Channels (Global, User-Driven)
 
 ### Definition
-User-controlled scoped synchronization.
+Channels are **global**, color-coded named contexts that allow **users** to dynamically group apps via a Channel Selector UI.
+
+**Key Characteristics:**
+- **Scope:** Global across entire platform
+- **Control:** User-driven (not programmatic)
+- **Implementation:** Built on top of Shared Contexts
+- **FDC3 Mapping:** Can be mapped to FDC3 User Channels and Bloomberg Groups
 
 ### Types
 ```typescript
@@ -285,7 +310,7 @@ import { useIOConnect } from "@interopio/react-hooks";
 export const ChannelListener = () => {
   useIOConnect((io) => {
     const unsubscribe = io.channels.subscribe<ChannelClient>((data) => {
-      console.log(data);
+      console.log("Channel data:", data);
     });
     return unsubscribe;
   }, []);
@@ -294,22 +319,63 @@ export const ChannelListener = () => {
 };
 ```
 
-### Publish Nested Data Safely
+### Publish to Current Channel
 ```typescript
-await io.channels.setPath<ChannelClient>({
-  path: "client",
-  value: {
-    clientId: "123",
-    name: "Alice",
-  },
+await io.channels.publish({
+  clientId: "123",
+  name: "Alice",
 });
+```
+
+### Join a Specific Channel
+```typescript
+await io.channels.join("Red");
 ```
 
 ### Multi-Channel Safe Access
 ```typescript
 const channels = await io.channels.myChannels();
-if (!channels.length) return;
+if (!channels.length) {
+  console.log("Not joined to any channel");
+  return;
+}
 ```
+
+---
+
+## Workspace Context (Scope Isolation)
+
+### Definition
+Workspace Context provides **local scope isolation** for apps within a specific Workspace instance.
+
+**Key Characteristics:**
+- **Scope:** Local to a single Workspace
+- **Control:** Automatic isolation
+- **Use Case:** Multi-tasking (e.g., two clients in separate workspaces)
+
+### Set Workspace Context
+```typescript
+const myWorkspace = await io.workspaces.getMyWorkspace();
+await myWorkspace.setContext({
+  clientId: "123",
+  name: "Alice"
+});
+```
+
+### Subscribe to Workspace Context
+```typescript
+const myWorkspace = await io.workspaces.getMyWorkspace();
+myWorkspace.onContextUpdated((context) => {
+  console.log("Workspace context:", context);
+});
+```
+
+> **CAUTION:** "Workspace Channels" Do Not Exist
+> 
+> Channels are **always global**. Workspace Context provides **scope isolation**.
+> These are two separate mechanisms - do not conflate them.
+
+---
 
 ## Intents
 
@@ -470,6 +536,8 @@ export const ioFactory = () =>
 ```
 
 ## ❌ Forbidden APIs (Do Not Generate)
+
+**Browser-Native Messaging:**
 - BroadcastChannel
 - window.postMessage
 - window.addEventListener("storage", ...)
@@ -477,6 +545,18 @@ export const ioFactory = () =>
 - custom WebSocket message buses
 - SharedWorker
 - MessageChannel
+
+**Why These Are Forbidden:**
+1. **Limited Scope:** Only work between web apps (no native app support)
+2. **No Governance:** Bypass io.Connect's monitoring and permissioning
+3. **Brittle:** Create point-to-point integrations that break easily
+4. **No FDC3:** Cannot leverage industry standards or third-party interop
+
+**Use io.Connect APIs Instead:**
+- `io.contexts` for global state sync
+- `io.channels` for user-driven grouping
+- `io.interop` for RPC and streaming
+- `io.intents` for workflow actions
 
 ---
 
@@ -557,4 +637,40 @@ createRoot(document.getElementById('root')!).render(
 1. Open iframe URL directly to see error
 2. Check port numbers match in Platform
 3. Verify licenseKey for Browser Platform
+
+---
+
+## 📖 Terminology Reference
+
+### Correct Terms
+
+| Term | Scope | Control | Use Case |
+|------|-------|---------|----------|
+| **Channels** | Global | User (UI) | User links apps on-the-fly |
+| **Shared Contexts** | Global | Programmatic | Automatic state sync |
+| **Workspace Context** | Local (Workspace) | Automatic | Multi-tasking isolation |
+
+### Incorrect Terms
+
+| ❌ Incorrect | ✅ Correct | Explanation |
+|-------------|-----------|-------------|
+| "Workspace Channels" | "Channels" or "Workspace Context" | Channels are global; Workspace Context is local |
+| "Tabs" (for windows) | "Windows" | io.Connect manages windows, not browser tabs |
+| "Shared financial language" (for FDC3) | "Open source standard under FINOS" | FDC3 is an industry specification, not just a language |
+
+---
+
+## 📚 Additional Resources
+
+### NotebookLM Integration
+Query the io.Connect notebook for verified answers:
+- Notebook ID: `2d380932-aed8-44d2-8813-6dec341e4400`
+- Title: "io.Connect React Hooks Integration Guide"
+- Sources: 26 official documentation pages
+
+### Key Documentation
+- Browser Platform: https://docs.interop.io/browser/
+- Desktop Platform: https://docs.interop.io/desktop/
+- FDC3 Standard: https://fdc3.finos.org/
+- React Integration: https://docs.interop.io/desktop/getting-started/how-to/interop-enable-your-apps/react/
 

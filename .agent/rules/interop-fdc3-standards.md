@@ -64,12 +64,24 @@ Never invent APIs or assume undocumented behavior.**
 ## 🏛️ Architectural Standards
 
 ### FDC3 Compliance
-- Prefer standard FDC3 contexts (e.g., `fdc3.contact`, `fdc3.instrument`)
-- Explain this as a shared financial language between apps
-- Always include `type` field in context objects
 
+**What is FDC3:**
+FDC3 (Financial Desktop Connectivity and Collaboration Consortium) is an **open source standard** developed under the FINOS Foundation. It defines:
+1. **API:** Consistent developer experience
+2. **Intents:** Standardized actions (e.g., "ViewChart")
+3. **Context Data:** Shared data structures
+4. **App Directory:** Trusted app discovery
+5. **Agent Bridging:** Cross-platform interoperability
+
+**io.Connect Implementation:**
+- Full FDC3 compliance for contexts and intents
+- Channels mapped to **FDC3 User Channels**
+- Interoperability with third-party FDC3 apps (Bloomberg, Fidessa)
+- Flexible API that supports both FDC3 and custom workflows
+
+**Always prefer FDC3 standard contexts:**
 ```typescript
-// FDC3-compliant context
+// ✅ FDC3-compliant
 const context = {
   type: "fdc3.contact",
   id: { email: "user@example.com" },
@@ -77,7 +89,37 @@ const context = {
 };
 ```
 
+**Reference:** https://fdc3.finos.org/
+
+### Communication Standards
+
+**Forbidden Communication Mechanisms**
+
+**NEVER** use browser-native messaging for inter-app communication:
+- ❌ `BroadcastChannel`
+- ❌ `window.postMessage`
+- ❌ `localStorage` events
+- ❌ Custom WebSocket buses
+- ❌ `SharedWorker`
+- ❌ `MessageChannel`
+
+**Why:** These mechanisms:
+1. Only work between web apps (no native app support)
+2. Bypass io.Connect's governance and monitoring
+3. Create brittle point-to-point integrations
+4. Cannot leverage FDC3 compliance or third-party interoperability
+
+**Required Communication Mechanisms**
+
+**ALWAYS** use io.Connect APIs:
+- ✅ `io.contexts` - Shared Contexts (global state sync)
+- ✅ `io.channels` - Channels (user-driven grouping)
+- ✅ `io.interop` - Methods (RPC) and Streams (real-time data)
+- ✅ `io.intents` - Intents (workflow actions)
+
 ### Pseudo-SPA Experience
+
+
 - Design frameless, coordinated windows so multiple apps feel like a single platform
 - Use shared contexts or channels for seamless state synchronization
 
@@ -172,6 +214,39 @@ useIOConnect(async (io) => {
   return () => unsubscribe();
 }, []);
 ```
+
+---
+
+## 🔄 State Synchronization - Correct Terminology
+
+### Channels (Global)
+- **Definition:** Named, color-coded contexts (Red, Green, Blue, etc.)
+- **Scope:** Global across entire platform
+- **Control:** User-driven via Channel Selector UI
+- **Use Case:** User wants to link specific apps on-the-fly
+- **Example:** `await io.channels.join("Red")`
+
+### Shared Contexts (Global)
+- **Definition:** Named context objects (e.g., "SelectedClient")
+- **Scope:** Global across entire platform
+- **Control:** Programmatic (developer-defined)
+- **Use Case:** Automatic state sync between apps
+- **Example:** `await io.contexts.update("SelectedClient", data)`
+
+### Workspace Context (Scope Isolation)
+- **Definition:** Context local to a specific Workspace
+- **Scope:** Local to one Workspace instance
+- **Control:** Automatic isolation per workspace
+- **Use Case:** Multi-tasking scenarios (e.g., two clients in separate workspaces)
+- **Example:** `await myWorkspace.setContext(data)`
+
+> **CAUTION:** "Workspace Channels" Do Not Exist
+> 
+> This is incorrect terminology. The correct terms are:
+> - **Channels** (global, regardless of workspace)
+> - **Workspace Context** (local scope isolation)
+> 
+> Apps in a workspace can still use global Channels, but the channel itself is not "workspace-specific."
 
 ### Persistence & Restore
 - Implement workspace-aware behavior so state survives reloads

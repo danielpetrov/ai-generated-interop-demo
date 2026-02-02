@@ -49,10 +49,26 @@ Web platform for integrating web apps:
 
 ## If BROWSER Mode Selected:
 
-### Follow-up Question:
-Ask if they already have a platform app setup:
-- **Platform exists:** Only need to create client app(s)
-- **Starting from scratch:** Need to create both platform app and client app(s)
+### Platform App Decision (CRITICAL)
+
+**You MUST ask this question FIRST:**
+
+> "Do you already have a Platform App running or provided by your organization?"
+
+**If YES (Platform exists):**
+- Generate **ONLY** client apps
+- Client apps use `@interopio/browser` library
+- No Platform code needed
+
+**If NO (Starting from scratch):**
+- Generate **Platform App** + client apps
+- Platform uses `@interopio/browser-platform` library
+- Requires license key in `.env`
+
+**Context:**
+- Prospects and existing users often have Platform Apps already deployed
+- Creating duplicate Platform Apps causes conflicts
+- Always verify before generating Platform code
 
 ### Architecture:
 - Create a **Platform App** (host) that embeds other apps as iframes
@@ -130,10 +146,34 @@ Ask if they have io.Connect Desktop already installed:
 - Use `@interopio/react-hooks` with `IOConnectProvider`
 - Use `@interopio/desktop` factory
 
-### State Management via io.Connect APIs:
-- `io.contexts` - Shared contexts
-- `io.channels` - Publish/subscribe pattern
-- `io.workspaces` - Workspace management
+### State Synchronization APIs:
+
+**Channels (Global, User-Driven)**
+- `io.channels` - Color-coded channels (Red, Green, Blue, etc.)
+- **Scope:** Global across entire platform
+- **Control:** User joins apps to channels via Channel Selector UI
+- Apps in the same channel share data automatically
+- Example: `await io.channels.join("Red")`
+
+**Shared Contexts (Global, Programmatic)**
+- `io.contexts` - Named context objects (e.g., "SelectedClient")
+- **Scope:** Global across entire platform
+- **Control:** Developer-defined via code
+- Any app can subscribe to a named context
+- Example: `await io.contexts.update("SelectedClient", data)`
+
+**Workspace Context (Local, Scope Isolation)**
+- Workspace-specific context for multi-tasking scenarios
+- **Scope:** Local to a single Workspace instance
+- **Control:** Automatically isolated per workspace
+- Prevents data "bleeding" between workspaces
+- Example: `await myWorkspace.setContext(data)`
+
+**❌ NEVER say "workspace channels" - this term does not exist**
+
+### Other APIs:
+- `io.interop` - Methods (RPC) and Streams (real-time data)
+- `io.intents` - Intents (workflow actions)
 - Other APIs: https://docs.interop.io/desktop/getting-started/what-is-io-connect-desktop/general-overview/index.html
 
 ### Project Structure:
@@ -167,6 +207,66 @@ createRoot(document.getElementById("root")!).render(
 ```
 
 ---
+
+## 🔒 FDC3 Compliance
+
+**What is FDC3:**
+- **FDC3** (Financial Desktop Connectivity and Collaboration Consortium) is an **open source standard** under the FINOS Foundation
+- Not just a "shared language" - it's an industry specification for financial app interoperability
+- Ensures apps from different vendors can communicate seamlessly
+
+**io.Connect FDC3 Support:**
+- Full compliance with FDC3 standard contexts (e.g., `fdc3.contact`, `fdc3.instrument`)
+- Channels mapped to **FDC3 User Channels** for cross-vendor compatibility
+- Integration with third-party implementations:
+  - Bloomberg Groups
+  - Fidessa Tracking Groups
+  - Other FDC3-compliant platforms
+
+**Always use FDC3 contexts when applicable:**
+```typescript
+// ✅ FDC3-compliant
+const context = {
+  type: "fdc3.contact",
+  id: { email: "user@example.com" },
+  name: "User Name"
+};
+
+// ❌ Custom context (use only when FDC3 doesn't fit)
+const context = {
+  clientId: "123",
+  name: "User Name"
+};
+```
+
+**Reference:** https://fdc3.finos.org/
+
+---
+
+## 🔄 Browser vs Desktop API Differences
+
+> **Warning:** While Browser and Desktop APIs overlap, they have differences in:
+> - Available options and configuration
+> - Workspaces API implementation
+> - Application Configuration structure
+> 
+> **Always prefer platform-specific documentation:**
+> - Browser apps → https://docs.interop.io/browser/
+> - Desktop apps → https://docs.interop.io/desktop/
+
+**Key Differences:**
+
+| Feature | Browser | Desktop |
+|---------|---------|----------|
+| **Platform App** | Required (iframe host) | Not needed (native container) |
+| **License Key** | Required in `.env` | Not required for client apps |
+| **Workspaces API** | Limited to browser context | Full OS-level window management |
+| **Native App Support** | Web apps only | Web + .NET + Java + legacy |
+| **Window Management** | Browser-constrained | OS-level (multi-monitor, sticky windows) |
+
+---
+
+
 
 ## 🎓 Mentorship Mode Guidelines
 

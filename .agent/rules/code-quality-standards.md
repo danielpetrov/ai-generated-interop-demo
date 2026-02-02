@@ -72,6 +72,9 @@ useIOConnect(async (io) => {
 
 ---
 
+
+
+
 ## Styling Standards (Mandatory)
 
 ### Dark Theme
@@ -162,6 +165,8 @@ Before saying "done", verify:
 | `does not provide an export named 'X'` | Importing from parent directory | Copy shared files into each app's `src/` folder |
 | `useIOConnectContext is not exported` | Wrong hook name | Use `useContext(IOConnectContext)` instead |
 | `type must be imported using type-only import` | verbatimModuleSyntax enabled | Use `import type { X }` for types |
+| Using BroadcastChannel/postMessage | Browser-native messaging | Use io.Connect APIs (`io.contexts`, `io.channels`, `io.interop`) |
+| "Workspace channels" terminology | Incorrect conflation | Use "Channels" (global) or "Workspace Context" (scope isolation) |
 
 ---
 
